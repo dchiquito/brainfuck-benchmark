@@ -111,13 +111,14 @@ fn git_repo_branch(url: &str, folder: &str, branch: &str) {
     if folder_path.exists() {
         assert_eq!(folder_path.is_dir(), true);
 
+        run_command(Command::new("git").args(["pull"]).current_dir(folder));
         run_command(
             Command::new("git")
-                .args(&["checkout", branch])
+                .args(["checkout", branch])
                 .current_dir(folder),
         );
     } else {
-        run_command(Command::new("git").args(&["clone", url, folder, "--branch", branch]));
+        run_command(Command::new("git").args(["clone", url, folder, "--branch", branch]));
     }
 }
 
@@ -252,19 +253,22 @@ fn main() {
     create_dir_all("results").unwrap();
 
     let mut bf: Vec<Box<dyn BFImpl + Send + Sync>> = vec![
-        Box::new(ApankratBffBfImpl),
-        Box::new(AsumagicAshbfBfImpl),
+        // Loops forever on benchmark Box::new(ApankratBffBfImpl),
+        // Doesn't compile Box::new(AsumagicAshbfBfImpl),
         Box::new(CwfitzgeraldBfccBfImpl),
         Box::new(CwfitzgeraldBfccOldBfImpl),
-        Box::new(DethraidBrainfuckBfImpl),
+        Box::new(DchiquitoImpl::new("deincrement")),
+        Box::new(DchiquitoImpl::new("main")),
+        Box::new(DchiquitoImpl::new("naive")),
+        // Doesn't compile Box::new(DethraidBrainfuckBfImpl),
         Box::new(GardrekStvmBfImpl),
         Box::new(KotayBffsreeBfImpl),
-        Box::new(LifthrasiirEsotopeBfImpl),
-        Box::new(RdebathTritiumBfImpl(RdebathTritiumMode::ArrayInterpreter)),
-        Box::new(RdebathTritiumBfImpl(RdebathTritiumMode::DynASM)),
-        Box::new(RdebathTritiumBfImpl(RdebathTritiumMode::LightningJIT)),
+        // Doesn't start Box::new(LifthrasiirEsotopeBfImpl),
+        // Doesn't run twinkle Box::new(RdebathTritiumBfImpl(RdebathTritiumMode::ArrayInterpreter)),
+        // Doesn't run twinkle Box::new(RdebathTritiumBfImpl(RdebathTritiumMode::DynASM)),
+        // Doesn't compile in time Box::new(RdebathTritiumBfImpl(RdebathTritiumMode::LightningJIT)),
         Box::new(RinoldmSbfiBfImpl),
-        Box::new(WilfredBfcBfImpl),
+        // Doesn't start Box::new(WilfredBfcBfImpl),
     ];
     bf.sort_unstable_by_key(|v| v.name());
     bf.retain(|v| {
